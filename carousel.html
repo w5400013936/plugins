@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>slide</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    ul{
+        list-style: none;
+    }
+    .banner{
+        width: 500px;
+        height: 300px;
+        border: 1px solid black;
+        margin: 100px auto;
+        position: relative;
+        overflow: hidden;
+    }
+    .img{
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .img li{
+        float: left;
+    }
+    .img li img{
+        width: 500px;
+        height: 300px;
+    }
+    .num{
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+    }
+    .num li {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 5px;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    .num .active{
+        background-color: gold;
+    }
+    .prev{
+        width: 20px;
+        height: 40px;
+        position: absolute;
+        top: calc(50% - 20px);
+        left: 0;
+        text-align: center;
+        font-size: 20px;
+        background-color: #f0f0f0;
+        line-height: 40px;
+        opacity: 0.7;
+        cursor: pointer;
+    }
+    .next{
+        width: 20px;
+        height: 40px;
+        position: absolute;
+        top: calc(50% - 20px);
+        right: 0;
+        text-align: center;
+        font-size: 20px;
+        background-color: #f0f0f0;
+        line-height: 40px;
+        opacity: 0.7;
+        cursor: pointer;
+    }
+</style>
+<body>
+    <div class="banner">
+        <ul class="img">
+            <li><img src="images/1.jpg" alt="#"></li>
+            <li><img src="images/2.jpg" alt="#"></li>
+            <li><img src="images/3.jpg" alt="#"></li>
+            <li><img src="images/4.jpg" alt="#"></li>
+        </ul>
+        <ul class="num"></ul>
+        <div class="prev" id="prev"><</div>
+        <div class="next" id="next">></div>
+    </div>
+
+    <script src="https://cdn.bootcss.com/jquery/1.9.0/jquery.min.js"></script>
+    <script>
+        var i = 0;
+        var timer = null; // 定义定时器
+
+        // 添加圆点
+        for(var j = 0;j<$('.img li').length;j++){
+            $('.num').append('<li></li>')
+        }
+
+        // 默认为第一个圆点添加选中样式
+        $('.num li').first().addClass('active'); 
+
+        // 复制第一张图片，并插入到最后，修改ul的宽度，使之后的图片滑动末尾以假乱真
+        var first_img = $('.img li').first().clone();
+        $('.img').append(first_img).width($('.img li').length * $('.img img').width())
+
+        var li_length = $('.img li').length
+
+        // 定义轮播图需要用到的方法
+        var carousel = {
+            play:function(){ // 定时自动播放方法
+                i++;
+                if(i >= li_length){ // 最后一张播放之后，把ul位置调回原位，由于第一张图片和最后一张图片是一样的，并且过程没有动画效果，所以肉眼是看不出来的
+                    i = 1;
+                    $('.img').css({left:0})
+                }
+                $('.img').stop().animate({left: -i * 500},300); // 自动播放每次动画的位移
+                if(i == li_length - 1){ // 如果播放到最后一张的时候，给第一个圆点添加样式
+                    $('.num li').eq(0).addClass('active').siblings().removeClass('active');
+                }
+                else{
+                    $('.num li').eq(i).addClass('active').siblings().removeClass('active')
+                }
+            },
+            hover:function(obj){ // 当光标停留在目标上的时候，停止播放
+                obj.hover(function(){
+                    clearInterval(timer)
+                },function(){
+                    timer = setInterval(carousel.play,2000)
+                })
+            },
+            mouseover:function(obj){ // 当光标移动到目标上的时候，ul进行一定的位移
+                obj.mouseover(function(){
+                    var index = $(this).index();
+                    $('.img').stop().animate({left: -index * 500},150)
+                    $('.num li').eq(index).addClass('active').siblings().removeClass('active')
+                })
+            },
+            prev:function(obj){ // 点击前一页按钮
+                obj.click(function(){
+                    i--;
+                    if(i <= -1){ // 如果在第一张图片的时候点击，对ul进行位移（没有动画，看不出来有位移）
+                        i = li_length - 2
+                        $('.img').css({left: -(i+1) * 500})
+                    }
+                    $('.img').stop().animate({left: -i * 500},300) // 在ul位移之后，再进行图片切换动画
+                    $('.num li').eq(i).addClass('active').siblings().removeClass('active')
+                })
+            },
+            next:function(obj){ // 同上
+                obj.click(function(){
+                    i++;
+                    if(i >= li_length){
+                        i = 1
+                        $('.img').css({left:0})
+                    }
+                    $('.img').stop().animate({left: -i * 500},300)
+                    if(i == li_length -1){
+                        $('.num li').eq(0).addClass('active').siblings().removeClass('active')
+                    }
+                    else{
+                        $('.num li').eq(i).addClass('active').siblings().removeClass('active')
+                    }
+                })
+            }
+        }
+        
+        //各种方法的调用
+        timer = setInterval(carousel.play,2000)
+        carousel.hover($('.banner'))
+        carousel.mouseover($('.num li'))
+        carousel.prev($('#prev'))
+        carousel.next($('#next'))
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>节点拖动</title>
+</head>
+<style>
+    .btn{
+        width: 50px;
+        margin: 0 auto;
+    }
+    .main{
+        width: 500px;
+        height: 300px;
+        position: absolute;
+        border: 1px solid darkgray;
+        background-color: #f0f0f0;
+        cursor: move;
+    }
+    .main .title{
+        height: 60px;
+        width: 100%;
+        border-bottom: 1px solid darkgray;
+    }
+    .main h2{
+        height: 100%;
+        margin: 0;
+        line-height: 60px;
+    }
+    .hide{
+        display: none;
+    }
+</style>
+<body>
+    <input class="btn" type="button" value="点我">
+    <div class="main" id="main">
+        <div id="title" class="title">
+            <h2>我是标题</h2>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.9.0/jquery.min.js"></script>
+    <script>
+        $('.btn').click(function(){
+            $('#main').toggleClass('hide')
+        })
+        var main = $('#main')
+        main.mousedown(function(e){
+            if(e.offsetY <= 60){ //判断鼠标的起始纵坐标是否在标题栏内
+
+                //获取整个div的起始坐标
+                var offset_x = $(this)[0].offsetLeft;
+                var offset_y = $(this)[0].offsetTop;
+
+                //获取鼠标相对于页面的起始坐标
+                var mouse_x = e.pageX;
+                var mouse_y = e.pageY;
+                $(document).mousemove(function(ev){ // 拖动时鼠标可能会超出文本，所以事件绑定到document上
+                    var _x = ev.pageX - mouse_x;
+                    var _y = ev.pageY - mouse_y;
+                    // 拖动后的坐标 = 起始坐标 + 位移量
+                    var now_x = (offset_x + _x);
+                    var now_y = (offset_y + _y);
+                    // 获取位移量
+                    // 判断终点位置，使其不超出窗口
+                    console.log(document.documentElement.clientWidth)
+                    console.log(document.documentElement.clientHeight)
+                    if(now_x + main.width() >= document.documentElement.clientWidth){
+                        now_x = (document.documentElement.clientWidth - main.width() - 2)
+                    }
+                    else if(now_x <= 0){
+                        now_x = 0;
+                    }
+                    if(now_y + main.height() >= document.documentElement.clientHeight){
+                        now_y = (document.documentElement.clientHeight - main.height() - 2)
+                    }
+                    else if(now_y <= 0){
+                        now_y = 0;
+                    }
+                    now_x += 'px';
+                    now_y += 'px';
+                    main.css({
+                        left:now_x,
+                        top:now_y
+                    })
+                })
+            }
+        })
+        $(document).mouseup(function(){ // 左键抬起时解绑事件
+            $(this).unbind('mousemove');
+        })
+    </script>
+</body>
+</html>

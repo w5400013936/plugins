@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>点击展开或折叠子节点</title>
+</head>
+<style>
+    *{
+        height: 100%;
+        padding: 0;
+    }
+    .treeNode{
+        width: 100px;
+        height: 200px;
+        border: 1px solid darkgray;
+    }
+    .root{
+        width: 100%;
+        height: 20px;
+        cursor: pointer;
+        margin-bottom: 5px;
+    }
+    .root img{
+        width: 20px;
+    }
+    .child{
+        width: 70%;
+        height: 20px;
+        margin-left: 30%;
+        display: none;
+    }
+</style>
+<body>
+    <div class="treeNode">
+        <div class="root" id="root" name="root" target="1"><img src="images/icon-fold_plus.png" alt="#">根节点1</div>
+        <div class="child" source="1">子节点1</div>
+        <div class="child" source="1">子节点1</div>
+        <div class="child" source="1">子节点1</div>
+        <div class="root" id="root" name="root" target="2"><img src="images/icon-fold_plus.png" alt="#">根节点2</div>
+        <div class="child" source="2">子节点2</div>
+        <div class="child" source="2">子节点2</div>
+        <div class="child" source="2">子节点2</div>
+        <div class="root" id="root" name="root" target="3"><img src="images/icon-fold_plus.png" alt="#">根节点3</div>
+        <div class="child" source="3">子节点3</div>
+        <div class="child" source="3">子节点3</div>
+        <div class="child" source="3">子节点3</div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.9.0/jquery.min.js"></script>
+    <script>
+        var roots = $("div[name='root']")
+        roots.each(function(item){
+            $(roots[item]).click(function(){
+                var children = $('.child[source='+(item+1)+']')
+                children.each(function(i){
+                    if($(children[i]).is(':hidden')){
+                        $('div#root[target='+(item+1)+'] img').attr({src:'images/icon-fold_minus.png'})
+                        $(children[i]).slideToggle()
+                        $('div#root[target!='+(item+1)+'] img').attr({src:'images/icon-fold_plus.png'})
+                        $('.child[source!='+(item+1)+']').slideUp()
+                    }
+                    else if($(children[i]).is(':visible')){
+                        $('div#root[target='+(item+1)+'] img').attr({src:'images/icon-fold_plus.png'})
+                        $(children[i]).slideToggle()
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+</html>

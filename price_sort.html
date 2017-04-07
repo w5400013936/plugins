@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script>
+        function sortPrice(a,b){
+            return b.price - a.price
+        }
+        var subs = [
+            {price:28},
+            {price:10},
+            {price:15},
+            {price:28},
+            {price:10}
+        ]
+        subs.sort(sortPrice) // 根据价格进行降序排序
+        for(var j = 0;j<subs.length;j++){
+            subs[j].num = j // 为数组里的每一个对象增加一个num属性
+        }
+        for(var i=0;i<subs.length;i++){
+            console.log(subs[i].price)
+            if(subs[i+1]){
+                if(subs[i].price == subs[i+1].price){ // 如果两个对象价格相同，则设置num相等
+                    // console.log(1111)
+                    subs[i+1].num = subs[i].num
+                    console.log(subs[i+1].num)
+                    if(subs[i+2]){
+                        var add = 1
+                        for(var j = i+2;j<subs.length;j++){
+                            subs[j].num = subs[i+1].num + add // 使接下来的num接着上面的num继续排下去
+                            add++
+                        }
+                    }
+                }
+            }
+        }
+        console.log(subs)
+    </script>
+</body>
+</html>

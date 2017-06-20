@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    /**{
+        box-sizing: border-box;
+    }*/
+    html,body{
+        height: 100%;
+        margin: 0;
+        padding-left: 10px;
+    }
+    .container{
+        width: 400px;
+        height: 100px;
+        border:1px solid red;
+        position: relative;
+    }
+    ul{
+        margin: 0;
+        padding: 0;
+        /*border: 1px solid #000;*/
+    }
+    .a li{
+        display: list-item;
+        float: left;
+        list-style: none;
+        text-align: center;
+        line-height: 30px;
+        height: 30px;
+        /*border: 1px solid #000;*/
+        cursor: pointer;
+        /*padding: 0 5px;*/
+    }
+    .sub{
+        position: absolute;
+        right: -300px;
+        display: list-item;
+        list-style: none;
+        text-align: center;
+        line-height: 30px;
+        height: 30px;
+        /*border: 1px solid #000;*/
+        cursor: pointer;
+        /*padding: 0 5px;*/
+    }
+</style>
+<body>
+    <div class="container">
+        <ul class="a">
+            <li num="1">11111111</li>
+            <li num="2">222222222222</li>
+            <li num="3">3333333333</li>
+            <li num="4">4444</li>
+            <li num="5">5555555555</li>
+            <li num="6">66666666666</li>
+            <li num="7">7777777777777777</li>
+            <li num="8">8888</li>
+        </ul>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script>
+        (function($){
+            $.fn.tab = function(options){
+                var defaults = {
+                    "liCallback":$.noop, // 回调函数，参数为对应的li
+                    "thisCallback":$.noop, // 回调函数，参数为this
+                }
+                var settings = $.extend(defaults,options);
+                var self = this;
+                this.init = function(){ // 初始化函数
+                    var total_width = self.width();  // 获取ul的宽度
+                    var sum_width = 0, mark = 0;
+                    var lis = self.find('li');
+                    if(lis.length > 0){
+                        lis.each(function(){
+                            sum_width += $(this).width(); // 叠加li的宽度
+                            if(sum_width > total_width){  // 判断li叠加的宽度是否超过ul的宽度
+                                if(mark == 0){ // 判断是否存在ul
+                                    self.parent().append('<button class="btn">...</button>')
+                                    .append('<ul class="sub">')
+                                    $('.sub').append($(this))
+                                    mark = 1;
+                                }
+                                else{
+                                    $('.sub').append($(this));
+                                }
+                            }
+                        })
+                    }
+                }
+                this.init();
+                $('.btn').click(function(){
+                    if($('.sub').is(':hidden')){
+                        $('.sub').show();
+                    }
+                    else{
+                        $('.sub').hide();
+                    }
+                })
+                this.liClick = function(){
+                    var total_width = self.width();
+                    if($('.sub').length >0){
+                        $('.sub').on('click','li',function(){
+                            var $this = $(this);
+                            var sum_width = 0;
+                            var pre_length = $this.prevAll().length;
+                            for(var i = 0;i<=pre_length;i++){
+                                self.append($('.sub').find('li:first')); // 将点击的li前面的所有li（包括点击的li）全部添加到显示列表里面
+                            }
+                            function widthCheck(){  // 宽度判断是否超出  函数
+                                var lis = self.find('li');
+                                lis.each(function(){
+                                    sum_width += $(this).width();
+                                })
+                                while(sum_width > total_width){  // 如果li总宽度超出显示列表ul的宽度
+                                    sum_width -= self.find('li:first').width();  
+                                    $('.sub').append(self.find('li:first'));   // 依次将第一个li添加到副列表里面
+                                }
+                            }
+                            widthCheck();
+                            if(settings.liCallback){
+                                settings.liCallback(this);
+                            }
+                        })
+                    }
+                }
+                this.liClick();
+                if(settings.thisCallback){
+                    settings.thisCallback(self);
+                }
+            }
+        })(jQuery);
+
+        $('.a').tab({
+            thisCallback:function(obj){
+                console.log(obj.init)
+            }
+        });
+    </script>
+</body>
+</html>

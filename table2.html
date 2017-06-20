@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>table2</title>
+    <style>
+        table{
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table td{
+            min-width: 30px;
+            min-height: 30px;
+            padding: 8px;
+            border: 1px solid #dddddd;
+            text-align: center;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        .title{
+            font-weight: bold;
+        }
+        .ui-resizable{
+            position: relative;
+        }
+        .ui-resizable-e{
+            cursor: e-resize;
+            width: 7px;
+            right: -5px;
+            top: 0;
+            height: 100%;
+        }
+        .ui-resizable-handle{
+            position: absolute;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr class="title">
+            <td>11111111111111111111111111111111111111111</td>
+            <td>22222222222222222222222222222222222222222</td>
+            <td>333333333333333333333333333333333333333333</td>
+            <td>444444444444444444444444444444444444444</td>
+            <td>555555555555555555555555</td>
+        </tr>
+        <tr>
+            <td>a</td>
+            <td>b</td>
+            <td>c</td>
+            <td>d</td>
+            <td>e</td>
+        </tr>
+    </table>
+    <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script>
+        var tds = $('table').find('tr:first td')
+        tds.each(function () {
+            $(this).width($(this).outerWidth())
+                        .addClass('ui-resizable')
+                        .append('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 1000;"></div>')
+        });
+        $('table').on('mousedown', '.ui-resizable-e', function (e) {
+            var x = e.clientX;
+            var $this = $(this).parent();
+            var thisWidth = $this.width();
+            var $next = $this.next();
+            var nextWidth = $next.width();
+            $(document).on('mousemove', function (e) {
+                var off = e.clientX - x;
+                $this.width(thisWidth + off);
+                $next.width(nextWidth - off);
+                return false;
+            }).on('mouseup', function (e) {
+                $(document).off('mousemove')
+                var arr = []
+                tds.each(function(i){
+                    var tdWidth = $(tds[i]).outerWidth()
+                    arr.push(tdWidth)
+                })
+                console.log(arr)
+            });
+        });
+        // 
+        // var ths =  $('#p-j_HeaderFix').find('tr.tableborder th')
+        // ths.each(function () {
+        //     $(this).width($(this).outerWidth())
+        //                 .addClass('ui-resizable')
+        //                 .append('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 1000;"></div>')
+        // });
+        // $('table#p-j_HeaderFix').on('mousedown', '.ui-resizable-e', function (e) {
+        //     var x = e.clientX;
+        //     var $this = $(this).parent();
+        //     var thisWidth = $this.width();
+        //     var $next = $this.next();
+        //     var nextWidth = $next.width();
+        //     $(document).on('mousemove', function (e) {
+        //         var off = e.clientX - x;
+        //             $this.width(thisWidth + off);
+        //             $next.width(nextWidth - off);
+        //             return false;
+        //     }).on('mouseup', function (e) {
+        //         $(document).off('mousemove')
+        //         var arr = []
+        //         ths.each(function(i){
+        //             var tdWidth = $(ths[i]).outerWidth()
+        //             arr.push(tdWidth)
+        //         })
+        //         console.log(arr)
+        //     });
+        // });
+    </script>
+</body>
+</html>

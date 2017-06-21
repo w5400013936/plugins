@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    .main{
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        border: 1px solid darkgray;
+        overflow: hidden;
+    }
+    .scroll{
+        margin: 0;
+        /*padding: 0;*/
+        list-style: none;
+    }
+    .scroll li{
+        height: 25px;
+        width: 100%;
+    }
+</style>
+<body>
+    <div class="main">
+        <ul class="scroll">
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+            <li>5</li>
+            <li>6</li>
+        </ul>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script>
+        var scroll = $('.scroll')
+        var lineHeight = scroll.find('li:first').height()
+        var timer = setInterval(function(){
+            scroll.animate({'marginTop':-lineHeight + 'px'},function(){
+                scroll.css({'marginTop':0}).find('li:first').appendTo(scroll)
+            })
+        },2000)
+    </script>
+</body>
+</html>

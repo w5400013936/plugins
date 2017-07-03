@@ -137,6 +137,7 @@
             mouseover:function(obj){ // 当光标移动到目标上的时候，ul进行一定的位移
                 obj.mouseover(function(){
                     var index = $(this).index();
+                    var i = index;
                     $('.img').stop().animate({left: -index * 500},150)
                     $('.num li').eq(index).addClass('active').siblings().removeClass('active')
                 })
